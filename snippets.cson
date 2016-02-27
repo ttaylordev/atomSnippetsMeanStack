@@ -1,0 +1,301 @@
+# Your snippets
+#
+# Atom snippets allow you to enter a simple prefix in the editor and hit tab to
+# expand the prefix into a larger code block with templated values.
+#
+# You can create a new snippet in this file by typing "snip" and then hitting
+# tab.
+#
+# An example CoffeeScript snippet to expand log to console.log:
+#
+# '.source.coffee':
+#   'Console log':
+#     'prefix': 'log'
+#     'body': 'console.log $1'
+#
+# Each scope (e.g. '.source.coffee' above) can only be declared once.
+#
+# This file uses CoffeeScript Object Notation (CSON).
+# If you are unfamiliar with CSON, you can read more about it in the
+# Atom Flight Manual:
+# https://atom.io/docs/latest/using-atom-basic-customization#cson
+#coffee script uses hashes,
+#tabs must be perfect, it's kind of like Scss
+
+##################################################################
+####Credit for most of these snippets goes to:
+          ###Stephen(github.com/SBrinkworth)
+           ,     ,_
+           |`\    `;;,            ,;;'
+           |  `\    \ '.        .'.'
+           |    `\   \  '-""""-' /
+           `.     `\ /          |`
+             `>    /;   _     _ \
+              /   / |       .    ;
+             <  (`";\ ()   ~~~  (/_
+              ';;\  `,     __ _.-'` )
+                >;\          `   _.'
+                `;;\          \-'
+                  ;/           \ _
+                  |   ,"".     .` \
+                  |      _|   '   /
+                   ;    /")     .;-,
+              jgs   \    /  __   .-'
+                     \,_/-"`  `-'           ###http://ascii.co.uk/###
+##################################################################
+
+'.source.js': #defines js as source language
+  'controller': # name of snippet
+    'prefix': 'ctrl' #what you type to get snippet to show up
+    'body': """
+            angular.module("${1:app}").controller("${2:main}Ctrl", function($scope) {
+              $3
+            });
+            """ # one line of code is surrounded with "" , two multiple with """ # the dollar sign is what it fills it with, the 1 tells it that you tab into the first line in the list, the 2 means it will go to the 2nd line and tab, the rest of the parenth is placeholders for what you will type.
+  'app':
+    'prefix': 'app'
+    'body': """
+            var app = angular.module("${1:app}", []);
+            """
+  'route app':
+    'prefix': 'route'
+    'body': """
+            var app = angular.module("${1:app}", ['ngRoute']);
+
+            app.config(function($routeProvider) {
+
+              $routeProvider.when('/', {
+                templateUrl: '${2:app/routes/home/homeTmpl.html}',
+                controller: '${3:homeCtrl}'
+              }).otherwise({
+                redirectTo: '/'
+              });
+            });
+            """
+  'service':
+    'prefix': 'serv'
+    'body': """
+            angular.module("${1:app}").service("${2:main}Service", function() {
+              $3
+            });
+            """
+  'http get':
+    'prefix': 'httpg'
+    'body': """
+            this.${1:getData} = function() {
+              return $http({
+                method: '${2:GET}',
+                url: ${3:baseUrl}
+              }).then(function(response) {
+                  return response;
+              });
+            };
+            """
+  'http post':
+    'prefix': 'httppo'
+    'body': """
+            this.${1:postData} = function(${2:data}) {
+              return $http({
+                method: '${3:POST}',
+                url: ${4:baseUrl},
+                data: {$5: $2}
+              }).then(function(response) {
+                  return response;
+              });
+            };
+            """
+  'console.log':
+    'prefix': 'con'
+    'body': """
+            console.log($1);
+            """
+
+  "app.get":
+    "prefix": "app.get"
+    "body": "app.get('/$1', ${2:function(req, res) {\r\n\t$3\r\n\\}});"
+
+  "app.post":
+    "prefix": "app.post"
+    "body": "app.post('/$1', ${2:function(req, res) {\r\n\t$3\r\n\\}});"
+
+
+
+
+
+  'Server':
+    'prefix': 'server'
+    'body': """
+            var express = require( 'express' );
+            var cors = require( 'cors' );
+            var bodyParser = require( 'body-parser' );
+            var mongoose = require( 'mongoose' );
+
+
+            // Controllers
+            var ${1:model}Ctrl = require( './controllers/${1:model}Ctrl' ); //does not need a .js, it knows that if you are requiring it, that it should be a js file.
+
+            //initialize app
+            var app = express();
+
+            //initialize dependencies
+            app.use( cors() );
+            app.use( bodyParser.json() );
+            app.use( express.static( __dirname + './../public' ) ); // NOTE: tells it to host this static page for us Local through Nodemon.
+
+
+            //endpoints
+            // create end point
+            app.post( '/${1:model}', ${1:model}Ctrl.create );
+
+            // update end point
+            app.put( '/${1:model}/:id', ${1:model}Ctrl.update );
+
+            //delete end point
+            app.delete( '/${1:model}/:id', ${1:model}Ctrl.delete );
+            // read end point
+            // a get method that is being passed a URL, and a callback.
+            // ${1:model} URL, using the callback method, read, on the ${1:model}Ctrl object.
+            app.get( '/${1:model}s', ${1:model}Ctrl.read );
+            //callback is when you pass the name specifically without invoking it, and the app will use it itself.
+
+
+            //routing Variables
+            var port = ${2:3000};
+            var mongoURI = 'mongodb://localhost:27017/${3:DatabaseName}';
+
+            //mongoDB connection
+            mongoose.set( 'debug', true );
+            mongoose.connect( mongoURI );
+            mongoose.connection.once( 'open', function () {
+              console.log( 'Connected to mongo at: ', mongoURI );
+            } )
+
+            // app listen
+            app.listen( port, function () {
+              console.log( 'listening on port ', port );
+            } );
+
+            """
+  'Server Controller':
+    'prefix': 'sctrl'
+    'body': """
+            // require model
+            var ${1:ModelName} = require( './../models/${1:ModelName}' );
+
+            // Exports
+            module.exports = {
+              create: function ( req, res ) {
+                ${1:ModelName}.find( req.body, function ( err, ${2:result} ) {
+                  if ( err ) {
+                    res.status( 500 ).send( err );
+                  }
+                  res.status( 200 ).send( ${2:result} );
+                } );
+              },
+
+              read: function ( req, res ) {
+                ${1:ModelName}.create( req.query, function ( err, ${2:result} ) {
+                  if ( err ) {
+                    res.status( 500 ).send( err );
+                  }
+                  res.status( 200 ).send( ${2:result} );
+                } );
+              },
+
+              update: function ( req, res ) {
+                ${1:ModelName}.findByIdAndUpdate( req.params.id, req.body, function ( err, ${2:result} ) {
+                  if ( err ) {
+                    res.status( 500 ).send( err );
+                  }
+                  res.status( 200 ).send( ${2:result} );
+                } );
+
+              },
+              delete: function ( req, res ) {
+                ${1:ModelName}.findByIdAndRemove( req.params.id, function ( err, ${2:result} ) {
+                  if ( err ) {
+                    res.status( 500 ).send( err );
+                  }
+                  res.status( 200 ).send( ${2:result} );
+                } );
+              }
+            }
+
+            """
+  'Angular Directive':
+    'prefix': 'dir'
+    'body': """
+            angular.module( "${1:appName}" ).directive( "${2:directiveName}Dir", function () {
+              return {
+                templateUrl: './app/directives/${2:directiveName}/${2:directiveName}Tmpl.html',
+                controller: '${3:controllerName}Ctrl',
+                restrict: 'E'
+              }
+              } );
+
+            """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'.text.html, .text.html .meta.scope.between-tag-pair, .text.html .punctuation.tag.begin':
+  'ng-html':
+    'prefix': 'nghtml'
+    'body': """
+            <!DOCTYPE html>
+            <html ng-app="${1:app}">
+              <head>
+                <meta charset="utf-8">
+                <title>$2</title>
+                <link rel="stylesheet" href="styles/style.css">
+              </head>
+              <body ng-controller="${3:mainCtrl}">
+
+                $4
+
+                <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
+                <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-route.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.18/angular-ui-router.js"></script>
+                <script src="bundle.js"></script>
+              </body>
+            </html>
+            """
+            # bundle.js is for gulp
+  'Input text':
+    'prefix': 'input'
+    'body': """
+            <input type="${1:text}" name="${2:name}" value="" placeholder="${2:EnterTextHere}">
+            """
+  'ui-view':
+    'prefix': 'uiview'
+    'body': """
+            <ui-view ></ui-view>
+            """
+
+  'ng-repeat':
+    'prefix': 'rep'
+    'body': """
+            <div ng-repeat="${1:obj} in $1s">
+
+            </div>
+            """
+  'ng-view':
+    'prefix': 'ngview'
+    'body': """
+            <ng-view ></ng-view>
+            """
